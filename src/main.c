@@ -2,7 +2,7 @@
 #include "task.h"
 #include "queue.h"
 #include <stdio.h>
-
+#include <string.h>
 #include "stm32f4xx.h"
 #include "utils.h"
 
@@ -12,7 +12,7 @@ xTaskHandle hRxUart;
 
 static xQueueHandle UartTxQueue;
 static xQueueHandle UartRxQueue;
-static xQueueHandle Cache;
+//static xQueueHandle Cache;
 //portTASK_FUNCTION_PROTO(vTask1, pvParameters);
 
 portTASK_FUNCTION_PROTO(vTxUart, pvParameters);
@@ -34,7 +34,7 @@ int main(void) {
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
-	UartTxQueue = xQueueCreate(10 ,100);
+	UartTxQueue = xQueueCreate(10 ,20);
 
 	// *** Initialise the queue HERE
 	
@@ -81,19 +81,39 @@ portTASK_FUNCTION(vTask1, pvParameters) {
 // ---------------------------------------------------------------------------- 
 portTASK_FUNCTION(vRxUart, pvParameters)
 {
-	int8_t bp_command[100]; // For appending the message
+	int8_t bp_command[20] = {0}; // For appending the message
 	int8_t b_character = 0;
+	int8_t b_ChCounter = 0;
+	
+	
+	
 	while(1)
 	{
-		
 		xQueueReceive( UartRxQueue, &b_character, portMAX_DELAY); 
 		
-		//<PRS> - <ACC> - <MIC> - < > --> Process Message
-		//<SNR><R/W>/r/n
-		snprintf((char *) bp_command,100,"Character: %c \r\n",b_character);
+		if(b_character == '\n' || b_character == '\r')
+		{
+			bp_command[b_ChCounter++] = '\r';
+			bp_command[b_ChCounter] = '\n';
+			xQueueSendToBack(UartTxQueue, bp_command, portMAX_DELAY);
+			memset(bp_command, 0, sizeof(bp_command)); 
+			b_ChCounter = 0;
+		}
+		else
+		{
+			bp_command[b_ChCounter] = b_character;
+			b_ChCounter++;
+		}
 		
-		xQueueSendToBack(UartTxQueue, &b_character, portMAX_DELAY);
-
+		if(b_ChCounter >= 17)
+		{
+			xQueueSendToBack(UartTxQueue, bp_command, portMAX_DELAY);
+			memset(bp_command, 0, sizeof(bp_command));
+			snprintf((char *) bp_command,20," - Size Exeeded! \r\n");
+			xQueueSendToBack(UartTxQueue, bp_command, portMAX_DELAY);
+			memset(bp_command, 0, sizeof(bp_command));
+			b_ChCounter = 0;
+		}
 	}
 }
 
