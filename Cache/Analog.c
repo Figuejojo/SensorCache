@@ -9,17 +9,17 @@ portTASK_FUNCTION(vAnalog, pvParameters)
 {
 	portTickType xLastWakeTime = xTaskGetTickCount();
 	QCacheMsg_t Msg_t;
-	Msg_t.task = ANALOG_e;
+	Msg_t.task = inANALOG_e;
 	while(1) 
 	{
 		// *** Insert a message into the queue HERE
-		Msg_t.Value.voltage = (3.3f * getPRES())/(255);
+		Msg_t.Value.voltage = (3.3f * getAnalog())/(255);
 		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
 		vTaskDelayUntil(&xLastWakeTime, (1000/portTICK_RATE_MS));
 	}
 }
 
-void initPRES(void)
+void initAnalog(void)
 {
 	// Analog for PC1 (GPIOC Pin 1) 
 	
@@ -55,7 +55,7 @@ void initPRES(void)
 	
 }
 
-uint16_t getPRES(void)
+uint16_t getAnalog(void)
 {
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_56Cycles);
 	ADC_SoftwareStartConv(ADC1);

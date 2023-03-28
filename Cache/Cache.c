@@ -14,11 +14,16 @@ portTASK_FUNCTION(vCache, pvParameters)
 		xQueueReceive( CacheQueue, &inMsg_t, portMAX_DELAY);
 		switch(inMsg_t.task)
 		{
-			case ANALOG_e:
+			case inANALOG_e:
 				cache_analog = inMsg_t.Value.voltage;
+				
+				break;
+			
+			case outANALOG_e:
 				snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
+				
 			default:
 				snprintf((char *)outMsg_t,20,"Error in Cache");
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);

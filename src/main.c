@@ -21,11 +21,8 @@ int main(void) {
 	
 	vUSART2_Init();
 	vUSART2_RX_IRQ_Init();
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	
-	initPRES();
+	initAnalog();
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
@@ -49,7 +46,6 @@ int main(void) {
 	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, 	&hPrintTask);
 	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hAnalog);
 	xTaskCreate(vCache, 	"Cache", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hCache);
-
 
 	vTaskStartScheduler(); // This should never return.
 

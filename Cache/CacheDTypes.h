@@ -11,8 +11,9 @@
 
 typedef enum
 {
-	NONE_e,
-	ANALOG_e,
+	NONE_e = -1,
+	inANALOG_e = 0,
+	outANALOG_e,
 }TASK_e;
 
 typedef union
