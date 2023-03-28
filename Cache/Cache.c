@@ -2,7 +2,6 @@
 
 xTaskHandle hCache;
 xQueueHandle CacheQueue;
-
 extern xQueueHandle UartTxQueue;
 
 portTASK_FUNCTION(vCache, pvParameters)

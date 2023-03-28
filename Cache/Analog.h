@@ -7,6 +7,6 @@ portTASK_FUNCTION_PROTO(vAnalog, pvParameters);
 
 void initPRES(void);
 
-uint16_t getPRES(void);
+static uint16_t getPRES(void);
 
 #endif
