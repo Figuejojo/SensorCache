@@ -1,43 +1,21 @@
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include <stdio.h>
-#include <string.h>
-#include "stm32f4xx.h"
-#include "utils.h"
+
+
+#include "CacheDTypes.h"
+#include "Cache.h"
 #include "Pressure.h"
 
-xTaskHandle hAnalog;
+extern xTaskHandle hAnalog;
 xTaskHandle hPrintTask;
 xTaskHandle hRxUart;
-xTaskHandle hCache;
+extern xTaskHandle hCache;
 
-static xQueueHandle UartTxQueue;
+xQueueHandle UartTxQueue;
 static xQueueHandle UartRxQueue;
-static xQueueHandle CacheQueue;
+extern xQueueHandle CacheQueue;
 
-portTASK_FUNCTION_PROTO(vAnalog, pvParameters);
 portTASK_FUNCTION_PROTO(vTxUart, pvParameters);
 portTASK_FUNCTION_PROTO(vRxUart, pvParameters);
-portTASK_FUNCTION_PROTO(vCache , pvParameters);
 
-typedef enum
-{
-	NONE_e,
-	ANALOG_e,
-}TASK_e;
-
-typedef union
-{
-	char msg[10];
-	float voltage;	
-}MsgCache_t;
-
-typedef struct
-{
-	TASK_e task;
-	MsgCache_t Value;
-}QCacheMsg_t;
 
 // ============================================================================
 int main(void) {
@@ -83,49 +61,6 @@ int main(void) {
 	// Will only get here if there was insufficient memory to create
 	// the idle task.
 	while(1);  
-}
-
-portTASK_FUNCTION(vCache, pvParameters)
-{
-	QCacheMsg_t inMsg_t;
-	int8_t outMsg_t[20] = {0};
-	float cache_analog = 0;
-	while(1)
-	{
-		xQueueReceive( CacheQueue, &inMsg_t, portMAX_DELAY);
-		switch(inMsg_t.task)
-		{
-			case ANALOG_e:
-				cache_analog = inMsg_t.Value.voltage;
-				//snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
-				//xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
-				break;
-			default:
-				snprintf((char *)outMsg_t,20,"Error in Cache");
-				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
-				break;
-		};		
-		memset(outMsg_t, 0, sizeof(outMsg_t));
-		memset(&inMsg_t, 0, sizeof(inMsg_t));
-	}
-}
-
-// This task should run every 500ms and send a message to the print task.
-// ---------------------------------------------------------------------------- 
-portTASK_FUNCTION(vAnalog, pvParameters) 
-{
-	portTickType xLastWakeTime = xTaskGetTickCount();
-	QCacheMsg_t Msg_t;
-	Msg_t.task = ANALOG_e;
-	while(1) 
-	{
-		// *** Insert a message into the queue HERE
-		Msg_t.Value.voltage = (3.3f * getPRES())/(255);
-	
-		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
-		
-		vTaskDelayUntil(&xLastWakeTime, (1000/portTICK_RATE_MS));
-	}
 }
 
 // This task should run whenever a message is waiting in the queue.

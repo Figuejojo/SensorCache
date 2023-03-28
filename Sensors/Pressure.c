@@ -1,8 +1,27 @@
 #include "Pressure.h"
 
+xTaskHandle hAnalog;
+extern xQueueHandle CacheQueue;
+	
+// This task should run every 500ms and send a message to the print task.
+// ---------------------------------------------------------------------------- 
+portTASK_FUNCTION(vAnalog, pvParameters) 
+{
+	portTickType xLastWakeTime = xTaskGetTickCount();
+	QCacheMsg_t Msg_t;
+	Msg_t.task = ANALOG_e;
+	while(1) 
+	{
+		// *** Insert a message into the queue HERE
+		Msg_t.Value.voltage = (3.3f * getPRES())/(255);
+		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
+		vTaskDelayUntil(&xLastWakeTime, (1000/portTICK_RATE_MS));
+	}
+}
+
 void initPRES(void)
 {
-	// Analog in PC1 
+	// Analog for PC1 (GPIOC Pin 1) 
 	
 	// GPIO Configuration and Initialization
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);

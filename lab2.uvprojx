@@ -541,7 +541,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Sensors</GroupName>
+          <GroupName>Cache</GroupName>
           <Files>
             <File>
               <FileName>ACC.c</FileName>
@@ -562,6 +562,21 @@
               <FileName>Pressure.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Sensors\Pressure.h</FilePath>
+            </File>
+            <File>
+              <FileName>Cache.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sensors\Cache.c</FilePath>
+            </File>
+            <File>
+              <FileName>Cache.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Sensors\Cache.h</FilePath>
+            </File>
+            <File>
+              <FileName>CacheDTypes.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Sensors\CacheDTypes.h</FilePath>
             </File>
           </Files>
         </Group>
