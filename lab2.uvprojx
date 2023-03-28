@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F407xx,USE_STDPERIPH_DRIVER,STM32F4XX,KEIL_IDE,KEIL_ARMCM4F,HSE_VALUE=8000000,PLL_M=8,PLL_N=336,PLL_P=2,PLL_Q=7</Define>
               <Undefine></Undefine>
-              <IncludePath>.\src;.\src\FreeRTOS\include;.\src\FreeRTOS\portable\keil\ARM_CM4F;.\Libraries\Device;.\Libraries\CMSIS\Include;.\Libraries\STM32F4xx_StdPeriph_Driver\inc;.\Libraries\STM32F4DISCOVERY</IncludePath>
+              <IncludePath>.\src;.\src\FreeRTOS\include;.\src\FreeRTOS\portable\keil\ARM_CM4F;.\Libraries\Device;.\Libraries\CMSIS\Include;.\Libraries\STM32F4xx_StdPeriph_Driver\inc;.\Libraries\STM32F4DISCOVERY;.\Sensors</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
