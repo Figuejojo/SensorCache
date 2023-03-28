@@ -749,7 +749,7 @@ Image Symbol Table
     __asm___6_port_c_39a90d8d__prvEnableVFP  0x080001e9   Thumb Code    16  port.o(.emb_text)
     PendSV_Handler                           0x080001fd   Thumb Code    88  port.o(.emb_text)
     vPortGetIPSR                             0x08000259   Thumb Code     6  port.o(.emb_text)
-    vTask1                                   0x08000261   Thumb Code   106  main.o(.text)
+    vAnalog                                  0x08000261   Thumb Code   106  main.o(.text)
     vTxUart                                  0x080002cb   Thumb Code    28  main.o(.text)
     vRxUart                                  0x080002e7   Thumb Code   162  main.o(.text)
     main                                     0x08000389   Thumb Code   146  main.o(.text)
@@ -1127,7 +1127,7 @@ Image Symbol Table
     AHBPrescTable                            0x08005784   Data          16  system_stm32f4xx.o(.constdata)
     Region$$Table$$Base                      0x08005794   Number         0  anon$$obj.o(Region$$Table)
     Region$$Table$$Limit                     0x080057b4   Number         0  anon$$obj.o(Region$$Table)
-    hTask1                                   0x20000000   Data           4  main.o(.data)
+    hAnalog                                  0x20000000   Data           4  main.o(.data)
     hPrintTask                               0x20000004   Data           4  main.o(.data)
     hRxUart                                  0x20000008   Data           4  main.o(.data)
     pxCurrentTCB                             0x20000014   Data           4  tasks.o(.data)
@@ -1246,7 +1246,7 @@ Image component sizes
 
        292         26          0         24      76800       3208   heap_2.o
        148          0          0          0          0       3382   list.o
-       592        114          0         20          0     250656   main.o
+       592        114          0         20          0     250658   main.o
        224         20          0          0          0       1921   misc.o
        970         52          0         12          0       8919   port.o
        152         14         48          0          0        739   pressure.o
@@ -1263,7 +1263,7 @@ Image component sizes
        228         18          0          0          0      19098   utils.o
 
     ----------------------------------------------------------------------
-     18164        854        488        160      78128     397042   Object Totals
+     18164        854        488        160      78128     397044   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -1320,8 +1320,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     21964        964        488        160      78128     393922   Grand Totals
-     21964        964        488        160      78128     393922   ELF Image Totals
+     21964        964        488        160      78128     393924   Grand Totals
+     21964        964        488        160      78128     393924   ELF Image Totals
      21964        964        488        160          0          0   ROM Totals
 
 ==============================================================================

@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "Pressure.h"
 
-xTaskHandle hTask1;
+xTaskHandle hAnalog;
 xTaskHandle hPrintTask;
 xTaskHandle hRxUart;
 
@@ -15,7 +15,7 @@ static xQueueHandle UartTxQueue;
 static xQueueHandle UartRxQueue;
 //static xQueueHandle Cache;
 
-portTASK_FUNCTION_PROTO(vTask1, pvParameters);
+portTASK_FUNCTION_PROTO(vAnalog, pvParameters);
 portTASK_FUNCTION_PROTO(vTxUart, pvParameters);
 portTASK_FUNCTION_PROTO(vRxUart,pvParameters);
 
@@ -56,7 +56,7 @@ int main(void) {
 	
 	xTaskCreate(vRxUart, "RxUart",configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hRxUart);
 	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &hPrintTask);
-	xTaskCreate(vTask1, "Task1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hPrintTask);
+	xTaskCreate(vAnalog, "Task1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hPrintTask);
 
 	vTaskStartScheduler(); // This should never return.
 
@@ -67,7 +67,7 @@ int main(void) {
 
 // This task should run every 500ms and send a message to the print task.
 // ---------------------------------------------------------------------------- 
-portTASK_FUNCTION(vTask1, pvParameters) {
+portTASK_FUNCTION(vAnalog, pvParameters) {
 	portTickType xLastWakeTime = xTaskGetTickCount();
 	int8_t pb_message[20] = {0};
 	while(1) 
