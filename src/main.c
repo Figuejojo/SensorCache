@@ -3,11 +3,13 @@
 #include "Cache.h"
 #include "Analog.h"
 #include "Uart.h"
+#include "ButLed.h"
 
 extern xTaskHandle hAnalog;
 extern xTaskHandle hPrintTask;
 extern xTaskHandle hRxUart;
 extern xTaskHandle hCache;
+extern xTaskHandle hGPIO;
 
 extern xQueueHandle UartTxQueue;
 extern xQueueHandle UartRxQueue;
@@ -19,8 +21,9 @@ int main(void) {
 	// Initialise all of the STM32F4DISCOVERY hardware
 	vUSART2_Init();
 	vUSART2_RX_IRQ_Init();
-	
+	initLEDs();
 	initAnalog();
+	initBUTs();
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
@@ -41,9 +44,10 @@ int main(void) {
 	// 6- A pointer to an xTaskHandle variable where the TCB will be stored
 	
 	xTaskCreate(vRxUart, "RxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+3,&hRxUart);
-	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, 	&hPrintTask);
+	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hPrintTask);
 	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hAnalog);
-	xTaskCreate(vCache, 	"Cache", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hCache);
+	xTaskCreate(vCache,  "Cache" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hCache);
+	xTaskCreate(vGPIO,  "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
 
 	vTaskStartScheduler(); // This should never return.
 
