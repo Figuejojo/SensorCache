@@ -10,16 +10,34 @@
 xTaskHandle hAnalog;
 xTaskHandle hPrintTask;
 xTaskHandle hRxUart;
+xTaskHandle hCache;
 
 static xQueueHandle UartTxQueue;
 static xQueueHandle UartRxQueue;
-//static xQueueHandle Cache;
+static xQueueHandle CacheQueue;
 
 portTASK_FUNCTION_PROTO(vAnalog, pvParameters);
 portTASK_FUNCTION_PROTO(vTxUart, pvParameters);
-portTASK_FUNCTION_PROTO(vRxUart,pvParameters);
+portTASK_FUNCTION_PROTO(vRxUart, pvParameters);
+portTASK_FUNCTION_PROTO(vCache , pvParameters);
 
-// *** Declare a queue HERE
+typedef enum
+{
+	NONE_e,
+	ANALOG_e,
+}TASK_e;
+
+typedef union
+{
+	char msg[10];
+	float voltage;	
+}MsgCache_t;
+
+typedef struct
+{
+	TASK_e task;
+	MsgCache_t Value;
+}QCacheMsg_t;
 
 // ============================================================================
 int main(void) {
@@ -38,7 +56,7 @@ int main(void) {
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
 	UartTxQueue = xQueueCreate(10 ,20);
-
+	CacheQueue = xQueueCreate(10,sizeof(QCacheMsg_t)); 
 	// *** Initialise the queue HERE
 	
 	// Welcome message
@@ -55,8 +73,10 @@ int main(void) {
 	//xTaskCreate(vTask1, "TASK1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hTask1);
 	
 	xTaskCreate(vRxUart, "RxUart",configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hRxUart);
-	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &hPrintTask);
-	xTaskCreate(vAnalog, "Task1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &hPrintTask);
+	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, 	&hPrintTask);
+	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hAnalog);
+	xTaskCreate(vCache, 	"Cache", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hCache);
+
 
 	vTaskStartScheduler(); // This should never return.
 
@@ -65,21 +85,48 @@ int main(void) {
 	while(1);  
 }
 
-// This task should run every 500ms and send a message to the print task.
-// ---------------------------------------------------------------------------- 
-portTASK_FUNCTION(vAnalog, pvParameters) {
-	portTickType xLastWakeTime = xTaskGetTickCount();
-	int8_t pb_message[20] = {0};
-	while(1) 
+portTASK_FUNCTION(vCache, pvParameters)
+{
+	QCacheMsg_t inMsg_t;
+	int8_t outMsg_t[20] = {0};
+	float cache_analog = 0;
+	while(1)
 	{
-		// *** Insert a message into the queue HERE
-		float data = (3.3f * getPRES())/(255);
-		snprintf((char *)pb_message,20,"PresData: %f\r\n",data);
-		xQueueSendToBack( UartTxQueue, pb_message, portMAX_DELAY);
-		vTaskDelayUntil(&xLastWakeTime, (5000/portTICK_RATE_MS));
+		xQueueReceive( CacheQueue, &inMsg_t, portMAX_DELAY);
+		switch(inMsg_t.task)
+		{
+			case ANALOG_e:
+				cache_analog = inMsg_t.Value.voltage;
+				snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
+				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				break;
+			default:
+				snprintf((char *)outMsg_t,20,"Error in Cache");
+				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				break;
+		};		
+		memset(outMsg_t, 0, sizeof(outMsg_t));
+		memset(&inMsg_t, 0, sizeof(inMsg_t));
 	}
 }
 
+// This task should run every 500ms and send a message to the print task.
+// ---------------------------------------------------------------------------- 
+portTASK_FUNCTION(vAnalog, pvParameters) 
+{
+	portTickType xLastWakeTime = xTaskGetTickCount();
+	QCacheMsg_t Msg_t;
+	Msg_t.task = ANALOG_e;
+	while(1) 
+	{
+		// *** Insert a message into the queue HERE
+		Msg_t.Value.voltage = (3.3f * getPRES())/(255);
+	
+		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
+		
+		vTaskDelayUntil(&xLastWakeTime, (1000/portTICK_RATE_MS));
+	}
+}
 
 // This task should run whenever a message is waiting in the queue.
 // ---------------------------------------------------------------------------- 
@@ -88,8 +135,6 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 	int8_t bp_command[20] = {0}; // For appending the message
 	int8_t b_character = 0;
 	int8_t b_ChCounter = 0;
-	
-	
 	
 	while(1)
 	{
