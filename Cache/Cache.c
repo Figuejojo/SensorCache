@@ -30,6 +30,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 	QCacheMsg_t inMsg_t;
 	int8_t outMsg_t[20] = {0};
 	float cache_analog = 0;
+	uint8_t cache_patt = 0;
 	while(1)
 	{
 		xQueueReceive( CacheQueue, &inMsg_t, portMAX_DELAY);
@@ -39,11 +40,20 @@ portTASK_FUNCTION(vCache, pvParameters)
 				cache_analog = inMsg_t.Value.voltage;
 				break;
 			
+			case EInPATTRN:
+				cache_patt = inMsg_t.Value.pattern;
+				break;
+			
 			case EOutANALOG:
 				snprintf((char *)outMsg_t,20,"<AN0>-Value: %0.2f V",cache_analog);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
-				
+			
+			case EOutPATTRN:
+				snprintf((char *)outMsg_t,20,"<PAT>-Hex: %x",cache_patt);
+				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				break;
+			
 			default:
 				snprintf((char *)outMsg_t,20,"Error in Cache");
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);

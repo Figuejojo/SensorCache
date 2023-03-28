@@ -12,7 +12,9 @@
 /*******************************************************************************
 * Static Global Variables
 *******************************************************************************/
-xTaskHandle hGPIO;		/*!< RTOS handler for GPIO Task   */
+xTaskHandle hGPIO;							/*!< RTOS handler for GPIO Task   */
+
+extern xQueueHandle CacheQueue;	/*!< RTOS queue message, Cache 					 */
 
 /*******************************************************************************
 * Function Implementation
@@ -29,27 +31,38 @@ portTASK_FUNCTION(vGPIO, pvParameters)
 	uint8_t ub_sequence = 0;
 	uint8_t buttons;
 	uint8_t Flag = 0;
+	
+	QCacheMsg_t Msg_t = 
+	{
+		.task = EInPATTRN,
+		.Value.pattern = 0,
+	};
+
 	while(1)
 	{
 		
 		GPIO_ResetBits(GPIOD,0xFF00);
 		buttons = GPIO_ReadInputData(GPIOE)>>8;
 		
-		if((buttons&0x01)==1)
+		if(buttons!=0)
 		{
-			Flag = 0;
-			ub_sequence = 0;
+			if((buttons&0x01)==1)
+			{
+				Flag = 0;
+				ub_sequence = 0;
+			}
+			else if(buttons > 1)
+			{
+				Flag = 0xFE;
+				ub_sequence = buttons;
+			}
+			Msg_t.Value.pattern = ub_sequence;
+			xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 		}
-		else if(buttons > 1)
-		{
-			Flag = 0xFE;
-			ub_sequence = buttons;
-		}
-		
 		GPIO_SetBits(GPIOD, ub_sequence<<8);
 		ub_sequence = Flag^ub_sequence;
 		
-		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME/portTICK_RATE_MS));
+		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME_GPIO/portTICK_RATE_MS));
 	}
 }
 

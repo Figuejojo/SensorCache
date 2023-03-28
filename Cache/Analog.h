@@ -16,9 +16,9 @@
 /*******************************************************************************
 * Macro Definitions
 *******************************************************************************/
-#define CYCLETIME (1000)	/*!< Amount of time for the Task delay              */
-#define VREF			(3.3f)	/*!< Reference voltage set as a 3.3 float value     */
-#define RES			  (255)		/*!< Analog Resolution value (2^n) currently 8 bit  */
+#define CYCLETIME_AN (1000)	/*!< Amount of time for the Task delay              */
+#define VREF			   (3.3f)	/*!< Reference voltage set as a 3.3 float value     */
+#define RES			      (255)		/*!< Analog Resolution value (2^n) currently 8 bit  */
 
 /*******************************************************************************
 * Function Prototypes

@@ -35,8 +35,10 @@ typedef enum
 	NONE_e 			= -1,		/*!< Error State */
 
 	EOutANALOG  =  0,		/*!< Requested Analog value 					  */
-
+	EOutPATTRN,					/*!< Requested LEDPattern	   					  */
+	
 	EInANALOG,					/*!< Incoming Analog value to be stored	*/
+	EInPATTRN,					/*!< Incoming LEDPattern to be stored	  */
 	
 	ETASKEND,						/*!< End of TASK enum values						*/
 /*@}*/
@@ -51,6 +53,7 @@ typedef union
 /*@{*/
 	char msg[10];			/*!< Message Value												*/
 	float voltage;		/*!< Voltage for analog conversion value  */
+	uint8_t pattern;	/*!< Current LED Pattern (HEX value)		  */
 /*@{*/	
 }MsgCache_t;
 

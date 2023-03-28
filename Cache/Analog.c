@@ -34,7 +34,7 @@ portTASK_FUNCTION(vAnalog, pvParameters)
 		Msg_t.Value.voltage = (VREF * getAnalog())/(RES);
 		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
 		
-		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME/portTICK_RATE_MS));
+		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME_AN/portTICK_RATE_MS));
 	}
 }
 
