@@ -24,7 +24,7 @@ int main(void) {
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
-	UartTxQueue = xQueueCreate(10 ,20);
+	UartTxQueue = xQueueCreate(10 ,22);
 	CacheQueue  = xQueueCreate(10 ,sizeof(QCacheMsg_t)); 
 	// *** Initialise the queue HERE
 	

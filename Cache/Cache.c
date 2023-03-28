@@ -40,7 +40,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 				break;
 			
 			case EOutANALOG:
-				snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
+				snprintf((char *)outMsg_t,20,"<AN0>-Value: %0.2f V",cache_analog);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 				
