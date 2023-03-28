@@ -16,9 +16,7 @@ extern xQueueHandle CacheQueue;
 // ============================================================================
 int main(void) {
 
-	// Initialise all of the STM32F4DISCOVERY hardware (including the serial port)
-	// Initialise all of the STM32F4DISCOVERY hardware (including the serial port)
-	
+	// Initialise all of the STM32F4DISCOVERY hardware
 	vUSART2_Init();
 	vUSART2_RX_IRQ_Init();
 	

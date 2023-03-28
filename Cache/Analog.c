@@ -1,24 +1,47 @@
+/** @file Analog.c
+ *  @brief Implementation file dedicated to getting, processing and sending 
+ *					the Analog value from PC1.
+ *
+ *  @author Y3913624
+ */
+
+/*******************************************************************************
+* Includes
+*******************************************************************************/
 #include "Analog.h"
 
+/*******************************************************************************
+* Global Variables
+*******************************************************************************/
 xTaskHandle hAnalog;
 extern xQueueHandle CacheQueue;
 	
-// This task should run every 500ms and send a message to the print task.
-// ---------------------------------------------------------------------------- 
+/*******************************************************************************
+* Function Implementation
+*******************************************************************************/
+	
+/**
+	*	@name vAnalog
+	* @Type	Task
+*/
 portTASK_FUNCTION(vAnalog, pvParameters) 
 {
 	portTickType xLastWakeTime = xTaskGetTickCount();
 	QCacheMsg_t Msg_t;
-	Msg_t.task = inANALOG_e;
+	Msg_t.task = EInANALOG;
 	while(1) 
 	{
-		// *** Insert a message into the queue HERE
-		Msg_t.Value.voltage = (3.3f * getAnalog())/(255);
+		Msg_t.Value.voltage = (VREF * getAnalog())/(RES);
 		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
-		vTaskDelayUntil(&xLastWakeTime, (1000/portTICK_RATE_MS));
+		
+		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME/portTICK_RATE_MS));
 	}
 }
 
+/**
+	*	@name initAnalog
+	* @Type	Function
+*/
 void initAnalog(void)
 {
 	// Analog for PC1 (GPIOC Pin 1) 
@@ -55,6 +78,10 @@ void initAnalog(void)
 	
 }
 
+/**
+	*	@name getAnalog
+	* @Type	Function
+*/
 uint16_t getAnalog(void)
 {
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_56Cycles);

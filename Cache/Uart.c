@@ -1,13 +1,34 @@
+/** @file Uart.c
+ *  @brief Implementation file for UART functions and tasks.
+ *					Two RTOS tasks:
+ *						- Sensing information to the user.
+ *						- Receiving, appending and interpresting incoming user data.
+ *
+ *  @author Y3913624
+ */
+
+/*******************************************************************************
+* Includes
+*******************************************************************************/
 #include "Uart.h"
 
-xTaskHandle hPrintTask;
-xTaskHandle hRxUart;
+/*******************************************************************************
+* Static Global Variables
+*******************************************************************************/
+xTaskHandle hPrintTask;		/*!< RTOS handler for USART Tx or Print Task   */
+xTaskHandle hRxUart;			/*!< RTOS handler for USART Rx Task				     */
 
-xQueueHandle UartTxQueue;
-xQueueHandle UartRxQueue;
+xQueueHandle UartTxQueue;	/*!< RTOS queue message, USART output  		     */
+xQueueHandle UartRxQueue;	/*!< RTOS queue message, USART input (From INT)*/
 
-// This task should run whenever a message is waiting in the queue.
-// ---------------------------------------------------------------------------- 
+/*******************************************************************************
+* Function Implementation
+*******************************************************************************/
+	
+/**
+	*	@name vAnalog
+	* @Type	Task
+*/
 portTASK_FUNCTION(vRxUart, pvParameters)
 {
 	int8_t bp_command[20] = {0}; // For appending the message
@@ -44,8 +65,10 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 	}
 }
 
-// This task should run whenever a message is waiting in the queue.
-// ---------------------------------------------------------------------------- 
+/**
+	*	@name vTxUart
+	* @Type	Task
+*/ 
 portTASK_FUNCTION(vTxUart, pvParameters) {
 	
 	int8_t b_message[100];
@@ -58,7 +81,10 @@ portTASK_FUNCTION(vTxUart, pvParameters) {
 	}
 }
 
-
+/**
+	*	@name USART2_IRQHandler
+	* @Type	Interrupt Handler
+*/ 
 void USART2_IRQHandler()
 {
 	char c = USART_ReceiveData(USART2);
