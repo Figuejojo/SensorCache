@@ -97,8 +97,8 @@ portTASK_FUNCTION(vCache, pvParameters)
 		{
 			case ANALOG_e:
 				cache_analog = inMsg_t.Value.voltage;
-				snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
-				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				//snprintf((char *)outMsg_t,20,"Volt Value: %0.2f\r\n",cache_analog);
+				//xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			default:
 				snprintf((char *)outMsg_t,20,"Error in Cache");
