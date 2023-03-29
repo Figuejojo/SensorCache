@@ -35,9 +35,11 @@ typedef enum
 	NONE_e 			= -1,		/*!< Error State */
 
 	EOutANALOG  =  0,		/*!< Requested Analog value 					  */
+	EOutANALOG1,
 	EOutPATTRN,					/*!< Requested LEDPattern	   					  */
 	
 	EInANALOG,					/*!< Incoming Analog value to be stored	*/
+	EInANALOG1,
 	EInPATTRN,					/*!< Incoming LEDPattern to be stored	  */
 	
 	ETASKEND,						/*!< End of TASK enum values						*/

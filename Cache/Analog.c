@@ -31,10 +31,13 @@ portTASK_FUNCTION(vAnalog, pvParameters)
 	Msg_t.task = EInANALOG;
 	while(1) 
 	{
-		Msg_t.Value.voltage = (VREF * getAnalog())/(RES);
+		Msg_t.Value.voltage = ADC2VOLTS(getAnalog());
 		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
 		
+		Msg_t.task = EInANALOG;
+		
 		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME_AN/portTICK_RATE_MS));
+		
 	}
 }
 
