@@ -27,7 +27,7 @@ extern xQueueHandle CacheQueue;	/*!< RTOS queue message, Cache 					 */
 *******************************************************************************/
 	
 /**
-	*	@name vAnalog
+	*	@name vRxUart
 	* @Type	Task
 */
 portTASK_FUNCTION(vRxUart, pvParameters)
@@ -62,6 +62,11 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 			else if(strcmp((char *)bp_command,"<PAT>\r") == 0) //Retreive LEDs pattern from cache
 			{
 				Msg_t.task = EOutPATTRN;
+				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
+			}
+			else if(strcmp((char *)bp_command,"<ACC>\r") == 0) //Retreive LEDs pattern from cache
+			{
+				Msg_t.task = EOutACC;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
 			else	//Error: Invalid command

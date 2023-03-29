@@ -544,16 +544,6 @@
           <GroupName>Cache</GroupName>
           <Files>
             <File>
-              <FileName>ACC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Cache\ACC.c</FilePath>
-            </File>
-            <File>
-              <FileName>ACC.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Cache\ACC.h</FilePath>
-            </File>
-            <File>
               <FileName>Analog.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Cache\Analog.c</FilePath>
@@ -597,6 +587,16 @@
               <FileName>ButLed.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Cache\ButLed.h</FilePath>
+            </File>
+            <File>
+              <FileName>ACC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Cache\ACC.c</FilePath>
+            </File>
+            <File>
+              <FileName>ACC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Cache\ACC.h</FilePath>
             </File>
           </Files>
         </Group>

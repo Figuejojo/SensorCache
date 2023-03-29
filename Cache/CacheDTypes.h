@@ -34,13 +34,15 @@ typedef enum
 /*@{*/
 	NONE_e 			= -1,		/*!< Error State */
 
-	EOutANALOG  =  0,		/*!< Requested Analog value 					  */
-	EOutANALOG1,
+	EOutANALOG  =  0,		/*!< Requested Analog0 value 					  */
+	EOutANALOG1,				/*!< Requested Analog1 value 					  */
 	EOutPATTRN,					/*!< Requested LEDPattern	   					  */
+	EOutACC,						/*!< Requested Accelerometer value		  */
 	
-	EInANALOG,					/*!< Incoming Analog value to be stored	*/
-	EInANALOG1,
+	EInANALOG,					/*!< Incoming Analog0 value to be stored*/
+	EInANALOG1,					/*!< Incoming Analog1 value to be stored*/
 	EInPATTRN,					/*!< Incoming LEDPattern to be stored	  */
+	EInACC,							/*!< Incoming Accelerometer to be stored*/
 	
 	ETASKEND,						/*!< End of TASK enum values						*/
 /*@}*/
@@ -53,9 +55,9 @@ typedef enum
 typedef union
 {
 /*@{*/
-	char msg[10];			/*!< Message Value												*/
 	float voltage;		/*!< Voltage for analog conversion value  */
 	uint8_t pattern;	/*!< Current LED Pattern (HEX value)		  */
+	float acc[3];			/*!< Values for ACC X Y and Z						  */
 /*@{*/	
 }MsgCache_t;
 

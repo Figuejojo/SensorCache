@@ -4,12 +4,14 @@
 #include "Analog.h"
 #include "Uart.h"
 #include "ButLed.h"
+#include "ACC.h"
 
 extern xTaskHandle hAnalog;
 extern xTaskHandle hPrintTask;
 extern xTaskHandle hRxUart;
 extern xTaskHandle hCache;
 extern xTaskHandle hGPIO;
+extern xTaskHandle hACC;
 
 extern xQueueHandle UartTxQueue;
 extern xQueueHandle UartRxQueue;
@@ -24,11 +26,11 @@ int main(void) {
 	initLEDs();
 	initBUTs();
 	initAnalog();
-	
+	initACC();
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
-	UartTxQueue = xQueueCreate(10 ,22);
+	UartTxQueue = xQueueCreate(10 ,40);
 	CacheQueue  = xQueueCreate(10 ,sizeof(QCacheMsg_t)); 
 	// *** Initialise the queue HERE
 	
@@ -49,6 +51,7 @@ int main(void) {
 	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hAnalog);
 	xTaskCreate(vCache,  "Cache" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+3,&hCache);
 	xTaskCreate(vGPIO,   "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
+	xTaskCreate(vACC, 	 "ACC" 	 , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hCache);
 
 	vTaskStartScheduler(); // This should never return.
 
