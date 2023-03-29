@@ -33,9 +33,13 @@ portTASK_FUNCTION(vCache, pvParameters)
 	uint8_t cache_patt = 0;
 	while(1)
 	{
+		// Retreive command message from RTOS queue
 		xQueueReceive( CacheQueue, &inMsg_t, portMAX_DELAY);
+		
+		// Identify the command task
 		switch(inMsg_t.task)
 		{
+			/**	EInXXXX are for saving data in cache	**/
 			case EInANALOG:
 				cache_analog = inMsg_t.Value.voltage;
 				break;
@@ -48,6 +52,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 				cache_patt = inMsg_t.Value.pattern;
 				break;
 			
+			/**	EOutXXXX request information from cache	**/
 			case EOutANALOG:
 				snprintf((char *)outMsg_t,20,"<AN0>-Value: %0.2f V",cache_analog);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
@@ -63,6 +68,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			
+			/**	If no command is identified.	**/
 			default:
 				snprintf((char *)outMsg_t,20,"Error in Cache");
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);

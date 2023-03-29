@@ -100,7 +100,7 @@ Section Cross References
     butled.o(.text) refers to stm32f4xx_exti.o(.text) for EXTI_Init
     butled.o(.text) refers to misc.o(.text) for NVIC_Init
     butled.o(.text) refers to butled.o(.constdata) for .constdata
-    butled.o(.text) refers to butled.o(.data) for Flag
+    butled.o(.text) refers to butled.o(.data) for svgFlag
     butled.o(.text) refers to cache.o(.data) for CacheQueue
     startup_stm32f407xx.o(RESET) refers to startup_stm32f407xx.o(STACK) for __initial_sp
     startup_stm32f407xx.o(RESET) refers to startup_stm32f407xx.o(.text) for Reset_Handler
@@ -697,7 +697,7 @@ Image Symbol Table
     .data                                    0x2000008c   Section        8  cache.o(.data)
     .data                                    0x20000094   Section       16  uart.o(.data)
     .data                                    0x200000a4   Section        5  butled.o(.data)
-    Flag                                     0x200000a8   Data           1  butled.o(.data)
+    svgFlag                                  0x200000a8   Data           1  butled.o(.data)
     .data                                    0x200000ac   Section        4  system_stm32f4xx.o(.data)
     .bss                                     0x200000b0   Section       64  queue.o(.bss)
     .bss                                     0x200000f0   Section      200  tasks.o(.bss)

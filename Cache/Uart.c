@@ -42,27 +42,29 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 	
 	while(1)
 	{
+		//Retreive character sent from Interrupt.
 		xQueueReceive( UartRxQueue, &b_character, portMAX_DELAY); 
 		
+		// If the received character is '\n' then, the message validation starts. 
 		if(b_character == '\n')
 		{
-			//Send data to Cache
-			if(strcmp((char *)bp_command,"<AN0>\r") == 0)
+			
+			if(strcmp((char *)bp_command,"<AN0>\r") == 0) //Retreive Analog0 data from cache
 			{
 				Msg_t.task = EOutANALOG;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
-			else if(strcmp((char *)bp_command,"<AN1>\r") == 0)
+			else if(strcmp((char *)bp_command,"<AN1>\r") == 0) //Retreive Analog1 data from cache
 			{
 				Msg_t.task = EOutANALOG1;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
-			else if(strcmp((char *)bp_command,"<PAT>\r") == 0)
+			else if(strcmp((char *)bp_command,"<PAT>\r") == 0) //Retreive LEDs pattern from cache
 			{
 				Msg_t.task = EOutPATTRN;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
-			else
+			else	//Error: Invalid command
 			{
 				bp_command[b_ChCounter-1] = '\0';
 				snprintf((char*)bp_msg, INVMSGSZ,"Invalid CMD-%s",bp_command);
@@ -72,13 +74,13 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 			memset(bp_msg, 0, sizeof(bp_msg)); 
 			b_ChCounter = 0;
 		}
-		else
+		else //Append incomming character.
 		{
 			bp_command[b_ChCounter] = b_character;
 			b_ChCounter++;
 		}
 		
-		if(b_ChCounter >= CMDMAXSZ-1)
+		if(b_ChCounter >= CMDMAXSZ-1) //Error: Message size exceeded
 		{
 			snprintf((char *) bp_msg,INVMSGSZ,"Size Exceed!-%s",bp_command);
 			xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
@@ -112,6 +114,7 @@ portTASK_FUNCTION(vTxUart, pvParameters) {
 */ 
 void USART2_IRQHandler()
 {
+	//Retreive character from USART register and sent it to task.
 	char c = USART_ReceiveData(USART2);
 	xQueueSendToBackFromISR(UartRxQueue, &c, NULL);
 	USART_ClearFlag(USART2, USART_FLAG_RXNE);
