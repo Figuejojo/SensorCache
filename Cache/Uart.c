@@ -75,11 +75,11 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 		
 		if(b_ChCounter >= CMDMAXSZ-1)
 		{
-			xQueueSendToBack(UartTxQueue, bp_command, portMAX_DELAY);
+			snprintf((char *) bp_msg,INVMSGSZ,"Size Exceed!-%s",bp_command);
+			xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
+			
 			memset(bp_command, 0, sizeof(bp_command));
-			snprintf((char *) bp_command,CMDMAXSZ," - Size Exeeded! \r\n");
-			xQueueSendToBack(UartTxQueue, bp_command, portMAX_DELAY);
-			memset(bp_command, 0, sizeof(bp_command));
+			memset(bp_msg, 0, sizeof(bp_msg));
 			b_ChCounter = 0;
 		}
 	}
