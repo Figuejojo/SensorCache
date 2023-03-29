@@ -10,8 +10,26 @@ The main objective of this software is for testing sensors or for low latency da
 
 ## Commands
 
-- <AN0> | Get Analog 0 value 
-- <XXX> | Get xxxxx value.
+- <AN0> | Get Analog 0 (Pot1) value. 
+- <AN1> | Get Analog 1 (Pot2) value.
+- <PAT> | Get GPIO Pattern (Button&Leds) value.
+- <ACC> | Get Accelerometer values.
+
+### AN0
+
+### AN1
+
+### PAT
+
+### ACC
+
+## Errors
+
+- Invalid CMD | Not a valid command. Followed by the user input
+
+- Size Exceed!| Size of incomming message exceed the max size. Follow the user input.
+
+
 
 # Development
 
