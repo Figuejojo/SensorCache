@@ -10,10 +10,10 @@ The main objective of this software is for testing sensors or for low latency da
 
 ## Commands
 
-- <AN0> | Get Analog 0 (Pot1) value. 
-- <AN1> | Get Analog 1 (Pot2) value.
-- <PAT> | Get GPIO Pattern (Button&Leds) value.
-- <ACC> | Get Accelerometer values.
+- \<AN0> | Get Analog 0 (Pot1) value. 
+- \<AN1> | Get Analog 1 (Pot2) value.
+- \<PAT> | Get GPIO Pattern (Button&Leds) value.
+- \<ACC> | Get Accelerometer values.
 
 ### AN0
 
