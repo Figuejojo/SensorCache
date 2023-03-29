@@ -16,22 +16,27 @@
 /*******************************************************************************
 * Macro Definitions
 *******************************************************************************/
-#define CYCLETIME_AN (1000)	/*!< Amount of time for the Task delay              */
-#define VREF			   (3.3f)	/*!< Reference voltage set as a 3.3 float value     */
-#define RES			      (255)	/*!< Analog Resolution value (2^n) currently 8 bit  */
+#define CYCLETIME_AN (1000)	/*!< Amount of time for the Task delay              	 */
+#define VREF			   (3.3f)	/*!< Reference voltage set as a 3.3 float value     	 */
+#define RES			      (255)	/*!< Analog Resolution value (2^n) currently 8 bit  	 */
 
-#define ADC2VOLTS(x) ((VREF*x)/RES)
+#define ADC2VOLTS(x) ((VREF*x)/RES)	/*!< Macro function to converting adc to volts */
 
 /*******************************************************************************
 * Type definitions
 *******************************************************************************/
+/**
+ * @name Analog_e
+ * @Type enum
+ * @brief This enumerator is to distinguished from the Analog to be read.
+ */
 typedef enum
 {
-	EANERR = -1,
-	EAN0	 =  0,
-	EAN1,
+	EANERR = -1,	/*!< Error / No Supported 								*/
+	EAN0	 =  0,	/*!< Analog Zero or Potentiometer 1			  */
+	EAN1,					/*!< Analog One or Potentiometer 2			  */
 	
-	EANDEND,	
+	EANDEND,			/*!< END of the enumerator value				  */
 }Analog_e;
 
 /*******************************************************************************
@@ -57,7 +62,7 @@ void initAnalog(void);
 	*	@brief 	Retreive the analog value by starting the conversion and waiting for it to be ready.
 	*						It is static so it can only be used by the Analog.c file.
   *
-  * @param 	Void
+  * @param 	Analog - To chose which Analog should be used. @see Analog_e
 	* @return uint16_t value (Must be converted to voltage)
   */
 static uint16_t getAnalog(Analog_e Analog);

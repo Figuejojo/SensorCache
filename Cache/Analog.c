@@ -31,16 +31,18 @@ portTASK_FUNCTION(vAnalog, pvParameters)
 	Msg_t.task = EInANALOG;
 	while(1) 
 	{
-		Msg_t.task = EInANALOG;
-		Msg_t.Value.voltage = ADC2VOLTS(getAnalog(EAN0));
+		
+		Msg_t.task = (Msg_t.task == EInANALOG1) ? EInANALOG : EInANALOG1;
+		if(Msg_t.task == EInANALOG) //Get process and send value for Analog0/Pot1 
+		{
+			Msg_t.Value.voltage = ADC2VOLTS(getAnalog(EAN0));
+		}
+		else //Get process and send value for Analog1/Pot2
+		{
+			Msg_t.Value.voltage = ADC2VOLTS(getAnalog(EAN1));
+		}
 		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
 		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME_AN/portTICK_RATE_MS));
-		
-		Msg_t.task = EInANALOG1;
-		Msg_t.Value.voltage = ADC2VOLTS(getAnalog(EAN1));
-		xQueueSendToBack( CacheQueue, &Msg_t, portMAX_DELAY);
-		vTaskDelayUntil(&xLastWakeTime, (CYCLETIME_AN/portTICK_RATE_MS));
-		
 	}
 }
 
@@ -70,9 +72,10 @@ void initAnalog(void)
 	GpioPot_t.GPIO_Pin = GPIO_Pin_2;
 	GPIO_Init(GPIOC, &GpioPot_t);
 	
-	//ADC Configuration
+	//ADC Bus Peripheral Enable
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
+	//ADC Configuration
 	ADC_CommonInitTypeDef AdcCommon_t = 
 	{
 		.ADC_Mode = ADC_Mode_Independent,
@@ -96,23 +99,24 @@ void initAnalog(void)
 */
 uint16_t getAnalog(Analog_e Analog)
 {
-	if(Analog == EAN0)
+	
+	if(Analog == EAN0) // Analog Zero or Potentiometer 0
 	{
 		ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_56Cycles);
 	}
-	else if (Analog == EAN1)
+	else if (Analog == EAN1) // Analog One or Potentiometer Zero
 	{
 		ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 1, ADC_SampleTime_56Cycles);
 	}
-	else
+	else // Return an error
 	{
 		return (uint16_t)EANERR;
 	}
 	
+	// Initialize and wait for ADC.
 	ADC_SoftwareStartConv(ADC1);
-	
 	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
 	
-	return ADC_GetConversionValue(ADC1);
+	return ADC_GetConversionValue(ADC1); // Get and return analog value
 }
