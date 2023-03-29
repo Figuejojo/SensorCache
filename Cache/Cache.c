@@ -29,7 +29,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 {
 	QCacheMsg_t inMsg_t;
 	int8_t outMsg_t[20] = {0};
-	float cache_analog = 0;
+	float cache_analog, cache_analog1 = 0;
 	uint8_t cache_patt = 0;
 	while(1)
 	{
@@ -40,12 +40,21 @@ portTASK_FUNCTION(vCache, pvParameters)
 				cache_analog = inMsg_t.Value.voltage;
 				break;
 			
+		  case EInANALOG1:
+				cache_analog1 = inMsg_t.Value.voltage;
+				break;
+			
 			case EInPATTRN:
 				cache_patt = inMsg_t.Value.pattern;
 				break;
 			
 			case EOutANALOG:
 				snprintf((char *)outMsg_t,20,"<AN0>-Value: %0.2f V",cache_analog);
+				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				break;
+			
+			case EOutANALOG1:
+				snprintf((char *)outMsg_t,20,"<AN1>-Value: %0.2f V",cache_analog1);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			

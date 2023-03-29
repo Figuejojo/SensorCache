@@ -52,6 +52,11 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 				Msg_t.task = EOutANALOG;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
+			else if(strcmp((char *)bp_command,"<AN1>\r") == 0)
+			{
+				Msg_t.task = EOutANALOG1;
+				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
+			}
 			else if(strcmp((char *)bp_command,"<PAT>\r") == 0)
 			{
 				Msg_t.task = EOutPATTRN;

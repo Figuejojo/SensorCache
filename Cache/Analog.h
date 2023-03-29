@@ -23,6 +23,18 @@
 #define ADC2VOLTS(x) ((VREF*x)/RES)
 
 /*******************************************************************************
+* Type definitions
+*******************************************************************************/
+typedef enum
+{
+	EANERR = -1,
+	EAN0	 =  0,
+	EAN1,
+	
+	EANDEND,	
+}Analog_e;
+
+/*******************************************************************************
 * Function Prototypes
 *******************************************************************************/
 
@@ -48,6 +60,6 @@ void initAnalog(void);
   * @param 	Void
 	* @return uint16_t value (Must be converted to voltage)
   */
-static uint16_t getAnalog(void);
+static uint16_t getAnalog(Analog_e Analog);
 
 #endif //_PRES_H_

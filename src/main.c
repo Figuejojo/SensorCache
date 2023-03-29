@@ -44,11 +44,11 @@ int main(void) {
 	// 5- The task priority; higher numbers are higher priority, and the idle task has priority tskIDLE_PRIORITY
 	// 6- A pointer to an xTaskHandle variable where the TCB will be stored
 	
-	xTaskCreate(vRxUart, "RxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+3,&hRxUart);
+	xTaskCreate(vRxUart, "RxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hRxUart);
 	xTaskCreate(vTxUart, "TxUart", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hPrintTask);
 	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hAnalog);
-	xTaskCreate(vCache,  "Cache" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1,&hCache);
-	xTaskCreate(vGPIO,  "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
+	xTaskCreate(vCache,  "Cache" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+3,&hCache);
+	xTaskCreate(vGPIO,   "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
 
 	vTaskStartScheduler(); // This should never return.
 
