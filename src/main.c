@@ -22,8 +22,9 @@ int main(void) {
 	vUSART2_Init();
 	vUSART2_RX_IRQ_Init();
 	initLEDs();
-	initAnalog();
 	initBUTs();
+	initAnalog();
+	
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));

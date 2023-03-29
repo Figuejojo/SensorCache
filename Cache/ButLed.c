@@ -16,6 +16,7 @@ xTaskHandle hGPIO;							/*!< RTOS handler for GPIO Task   */
 
 extern xQueueHandle CacheQueue;	/*!< RTOS queue message, Cache 					 */
 
+static volatile uint8_t Flag = 0;
 /*******************************************************************************
 * Function Implementation
 *******************************************************************************/
@@ -28,9 +29,8 @@ portTASK_FUNCTION(vGPIO, pvParameters)
 {
 	
 	portTickType xLastWakeTime = xTaskGetTickCount();
-	uint8_t ub_sequence = 0;
+	uint8_t ub_sequence = 1;
 	uint8_t buttons;
-	uint8_t Flag = 0;
 	
 	QCacheMsg_t Msg_t = 
 	{
@@ -43,22 +43,23 @@ portTASK_FUNCTION(vGPIO, pvParameters)
 		
 		GPIO_ResetBits(GPIOD,0xFF00);
 		buttons = GPIO_ReadInputData(GPIOE)>>8;
-		
-		if(buttons!=0)
+	
+		if(Flag == 1 || buttons > 1)
 		{
-			if((buttons&0x01)==1)
+			if(Flag == 1)
 			{
 				Flag = 0;
-				ub_sequence = 0;
+				ub_sequence = 1;
 			}
 			else if(buttons > 1)
 			{
 				Flag = 0xFE;
-				ub_sequence = buttons;
+				ub_sequence = buttons;			
 			}
 			Msg_t.Value.pattern = ub_sequence;
 			xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 		}
+		
 		GPIO_SetBits(GPIOD, ub_sequence<<8);
 		ub_sequence = Flag^ub_sequence;
 		
@@ -66,6 +67,10 @@ portTASK_FUNCTION(vGPIO, pvParameters)
 	}
 }
 
+/**
+	*	@name initLEDs
+	* @Type	Function
+*/
 void initLEDs(void)
 {
 	//GPIOD are the LEDs
@@ -80,15 +85,51 @@ void initLEDs(void)
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
 
+/**
+	*	@name initBUTs
+	* @Type	Function
+*/
 void initBUTs(void)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+	
 	GPIO_InitTypeDef GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Pin = 0xFF00;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Pin = 0xFF00; //Set all GPIO pins
 	GPIO_InitStructure.GPIO_OType= GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed= GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
+	
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource8);
+	
+	EXTI_InitTypeDef EXTINT_t;
+	EXTINT_t.EXTI_Line = EXTI_Line8;
+	EXTINT_t.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTINT_t.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+	EXTINT_t.EXTI_LineCmd = ENABLE;
+	
+	EXTI_Init(&EXTINT_t);
+	
+	NVIC_InitTypeDef NVIC_InitStruct;
+	NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
+	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x00;
+	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStruct);
+	
+}
+
+/**
+	*	@name USART2_IRQHandler
+	* @Type	Interrupt Handler for PE8 (Button 1)
+*/ 
+void EXTI9_5_IRQHandler(void)
+{
+	if (EXTI_GetITStatus(EXTI_Line8) != RESET) 
+	{
+		Flag = 1;
+		EXTI_ClearITPendingBit(EXTI_Line8);
+  }
 }
