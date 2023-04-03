@@ -26,7 +26,7 @@ int main(void) {
 	initLEDs();
 	initBUTs();
 	initAnalog();
-	initACC();
+	uint8_t isAccSupported = initACC();
 	
 	// *** Initialise the queue HERE
 	UartRxQueue = xQueueCreate(20 ,sizeof(int8_t));
@@ -51,7 +51,14 @@ int main(void) {
 	xTaskCreate(vAnalog, "Analog", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hAnalog);
 	xTaskCreate(vCache,  "Cache" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+3,&hCache);
 	xTaskCreate(vGPIO,   "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
-	xTaskCreate(vACC, 	 "ACC" 	 , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hCache);
+	if(isAccSupported == 0)
+	{	
+		xTaskCreate(vACC, 	 "ACC" 	 , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hCache);
+	}
+	else
+	{	
+		printf("\r\nAccelerometer not supported\r\n");
+	}
 
 	vTaskStartScheduler(); // This should never return.
 

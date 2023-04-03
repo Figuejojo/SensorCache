@@ -18,7 +18,7 @@
 #define CYCLETIMEACC  (1000)			/*!< Amount of time for the Task delay    	 */
 
 //LIS3DH Commands (Datasheet)
-#define LIS3DH_WHO_AM_I  (0x07)		
+#define LIS3DH_WHO_AM_I  (0x0F)		
 #define LIS3DH_CTRL_REG0 (0x1E)
 #define LIS3DH_CTRL_REG1 (0x20)
 #define LIS3DH_CTRL_REG2 (0x21)
@@ -75,7 +75,7 @@ portTASK_FUNCTION_PROTO(vACC, pvParameters);
   *
   * @param 	Void
   */
-void initACC(void);
+uint8_t initACC(void);
 
 /** @name 	getACC
 	*	@brief 	Get the X,Y and Z raw data from the accelerometer. 

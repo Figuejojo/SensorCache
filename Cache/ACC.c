@@ -112,19 +112,26 @@ static void initPriphACC(void)
 	*	@name initACC
 	* @Type	Function
 */ 
-void initACC(void)
+uint8_t initACC(void)
 {
 	initPriphACC();
 
-	//LIS302DL_Read(&ctrl,  LIS3DH_CTRL_REG4, 1);
+	uint8_t ctrl;
+	//if(ctrl != )
+	LIS302DL_Read(&ctrl,  LIS3DH_WHO_AM_I, 1);
+	if(ctrl != 0x3F)
+	{
+		return 1;
+	}
 	
-								// 	ODR 		 LPen   	 X				Y					Z
-	uint8_t ctrl =  (2<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0);
+				// 	ODR 		LPen   X Enable	Y	Enable ZEnable
+	ctrl =  (2<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0);
 	
 	/* Write value to MEMS CTRL_REG1 regsister */
   LIS302DL_Write(&ctrl, LIS3DH_CTRL_REG1, 1);
 	LIS302DL_Read(&ctrl,  LIS3DH_CTRL_REG4, 1);
 	
+	return 0;
 }
 
 /**

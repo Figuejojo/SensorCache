@@ -72,7 +72,7 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 			else	//Error: Invalid command
 			{
 				bp_command[b_ChCounter-1] = '\0';
-				snprintf((char*)bp_msg, INVMSGSZ,"Invalid CMD-%s",bp_command);
+				snprintf((char*)bp_msg, INVMSGSZ,"<ERR|CMD>-Invalid:%s",bp_command);
 				xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
 			}
 			memset(bp_command, 0, sizeof(bp_command)); 
@@ -87,7 +87,7 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 		
 		if(b_ChCounter >= CMDMAXSZ-1) //Error: Message size exceeded
 		{
-			snprintf((char *) bp_msg,INVMSGSZ,"Size Exceed!-%s",bp_command);
+			snprintf((char *) bp_msg,INVMSGSZ,"<ERR|CMD>-Size Exceed:%s",bp_command);
 			xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
 			
 			memset(bp_command, 0, sizeof(bp_command));
