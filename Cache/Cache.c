@@ -28,9 +28,10 @@ extern xQueueHandle UartTxQueue;	/*!< Cache RTOS Queue Message for UART Tx		*/
 portTASK_FUNCTION(vCache, pvParameters)
 {
 	QCacheMsg_t inMsg_t;
-	int8_t outMsg_t[20] = {0};
-	float cache_analog, cache_analog1 = 0;
-	uint8_t cache_patt = 0;
+	int8_t outMsg_t[20] = {NULL};
+	float cache_analog, cache_analog1 = NULL;
+	float cache_ACC[3] = {NULL,NULL,NULL};
+	uint8_t cache_patt = NULL;
 	while(1)
 	{
 		// Retreive command message from RTOS queue
@@ -39,38 +40,63 @@ portTASK_FUNCTION(vCache, pvParameters)
 		// Identify the command task
 		switch(inMsg_t.task)
 		{
-			/**	EInXXXX are for saving data in cache	**/
-			case EInANALOG:
+			/**	EInXXXX are for saving data in cache						**/
+			case EInANALOG: /*!< Store Analog 0 data		*/
 				cache_analog = inMsg_t.Value.voltage;
 				break;
 			
-		  case EInANALOG1:
+		  case EInANALOG1:/*!< Store Analog 1 data		*/	
 				cache_analog1 = inMsg_t.Value.voltage;
 				break;
 			
-			case EInPATTRN:
+			case EInPATTRN:/*!< Store GPIO/Pattern data	*/
 				cache_patt = inMsg_t.Value.pattern;
 				break;
 			
-			/**	EOutXXXX request information from cache	**/
-			case EOutANALOG:
+			case EInACC:	/*!< Store Accelerometer data	*/
+				cache_ACC[0] = inMsg_t.Value.acc[0];
+				cache_ACC[1] = inMsg_t.Value.acc[1];
+				cache_ACC[2] = inMsg_t.Value.acc[2];
+				break;
+			
+			/**	EOutXXXX request information from cache						**/
+			case EOutANALOG:	/*!< Reply to Analog1 command			*/
 				snprintf((char *)outMsg_t,20,"<AN0>-Value: %0.2f V",cache_analog);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			
-			case EOutANALOG1:
+			case EOutANALOG1:	/*!< Reply to Analog0 command			*/
 				snprintf((char *)outMsg_t,20,"<AN1>-Value: %0.2f V",cache_analog1);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			
-			case EOutPATTRN:
-				snprintf((char *)outMsg_t,20,"<PAT>-Hex: %x",cache_patt);
+			case EOutPATTRN: /*!< Reply to GPIO/PATTERN command	*/
+				if(cache_patt == NULL)
+				{
+					snprintf((char *)outMsg_t,20,"<ERR|PAT>-No value");
+				}
+				else
+				{
+					snprintf((char *)outMsg_t,20,"<PAT>-Hex: %x",cache_patt);
+				}
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			
-			/**	If no command is identified.	**/
+		  case EOutACC:		/*!< Reply to Accelerometer command	*/
+				if(cache_ACC[0] != NULL)
+				{
+					snprintf((char *)outMsg_t,40,"<ACC>-XYZ: %0.2f %0.2f %0.2f",cache_ACC[0],cache_ACC[1],cache_ACC[2]);
+				}
+				else
+				{
+					snprintf((char *)outMsg_t,40,"<ERR|ACC>-No Value");
+				}
+				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
+				break;
+			
+			/**	If no command is identified.												**/
 			default:
-				snprintf((char *)outMsg_t,20,"Error in Cache");
+				snprintf((char *)outMsg_t,20,"<ERR>-Cache");
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 		};		

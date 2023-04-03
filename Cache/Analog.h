@@ -45,14 +45,15 @@ typedef enum
 
 /** @name 	vAnalog Task
 	*	@brief 	Collect data from PC1, process it and send the value to the cache, every @see CYCLETIME 
-  *
+	*						Every cycle a different analog is process. There are 2 analog so a value is updated every 
+	*						2*Cycletimes.
   * @param 	Void
   */
 portTASK_FUNCTION_PROTO(vAnalog, pvParameters);
 
 /** @name		initAnalog
 	*	@brief 	Initialize and configure the GPIO and Analog so that PC1 is ready to be use.
-	*						8bit resolution... (Todo) 
+	*						8bit resolution. (GPIOC Pin 1 and 2) 
   *
   * @param 	Void.
   */

@@ -27,7 +27,7 @@ extern xQueueHandle CacheQueue;	/*!< RTOS queue message, Cache 					 */
 *******************************************************************************/
 	
 /**
-	*	@name vAnalog
+	*	@name vRxUart
 	* @Type	Task
 */
 portTASK_FUNCTION(vRxUart, pvParameters)
@@ -64,10 +64,15 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 				Msg_t.task = EOutPATTRN;
 				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
 			}
+			else if(strcmp((char *)bp_command,"<ACC>\r") == 0) //Retreive LEDs pattern from cache
+			{
+				Msg_t.task = EOutACC;
+				xQueueSendToBack(CacheQueue, &Msg_t, portMAX_DELAY);
+			}
 			else	//Error: Invalid command
 			{
 				bp_command[b_ChCounter-1] = '\0';
-				snprintf((char*)bp_msg, INVMSGSZ,"Invalid CMD-%s",bp_command);
+				snprintf((char*)bp_msg, INVMSGSZ,"<ERR|CMD>-Invalid:%s",bp_command);
 				xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
 			}
 			memset(bp_command, 0, sizeof(bp_command)); 
@@ -82,7 +87,7 @@ portTASK_FUNCTION(vRxUart, pvParameters)
 		
 		if(b_ChCounter >= CMDMAXSZ-1) //Error: Message size exceeded
 		{
-			snprintf((char *) bp_msg,INVMSGSZ,"Size Exceed!-%s",bp_command);
+			snprintf((char *) bp_msg,INVMSGSZ,"<ERR|CMD>-Size Exceed:%s",bp_command);
 			xQueueSendToBack(UartTxQueue, bp_msg, portMAX_DELAY);
 			
 			memset(bp_command, 0, sizeof(bp_command));

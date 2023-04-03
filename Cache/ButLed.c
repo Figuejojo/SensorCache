@@ -16,7 +16,7 @@ xTaskHandle hGPIO;							/*!< RTOS handler for GPIO Task   			 */
 
 extern xQueueHandle CacheQueue;	/*!< RTOS queue message, Cache 					 */
 
-static volatile uint8_t svgFlag = 0;/*!< Retrieve change in Interrupt			 */
+static volatile uint8_t svgFlag = 1;/*!< Retrieve change in Interrupt			 */
 /*******************************************************************************
 * Function Implementation
 *******************************************************************************/
