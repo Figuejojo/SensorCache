@@ -76,7 +76,7 @@ portTASK_FUNCTION(vCache, pvParameters)
 				break;
 			
 		  case EOutACC:		/*!< Reply to Accelerometer command	*/
-				snprintf((char *)outMsg_t,40,"<ACC>-XYZ: %0.1f %0.1f %0.1f",cache_ACC[0],cache_ACC[1],cache_ACC[2]);
+				snprintf((char *)outMsg_t,40,"<ACC>-XYZ: %0.2f %0.2f %0.2f",cache_ACC[0],cache_ACC[1],cache_ACC[2]);
 				xQueueSendToBack(UartTxQueue, &outMsg_t, portMAX_DELAY);
 				break;
 			

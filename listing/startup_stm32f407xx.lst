@@ -870,8 +870,8 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=.\output\startup_stm32f407xx.d -o.\output\startup_stm32f407x
-x.o -I.\RTE\_FreeRTOS_Demo -IC:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Inc
-lude -IC:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\ST
+x.o -I.\RTE\_FreeRTOS_Demo -IC:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.8.0\CMSIS\Core\Inc
+lude -IC:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\ST
 M32F4xx\Include --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION 
 SETA 535" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx SETA 1" --predefi
 ne="_RTE_ SETA 1" --list=.\listing\startup_stm32f407xx.lst RTE\Device\STM32F407

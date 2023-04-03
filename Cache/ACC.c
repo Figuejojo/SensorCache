@@ -115,6 +115,9 @@ static void initPriphACC(void)
 void initACC(void)
 {
 	initPriphACC();
+
+	//LIS302DL_Read(&ctrl,  LIS3DH_CTRL_REG4, 1);
+	
 								// 	ODR 		 LPen   	 X				Y					Z
 	uint8_t ctrl =  (2<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0);
 	
@@ -131,19 +134,20 @@ void initACC(void)
 void getACC(axis_t * ACCx) //Default is +/-2g, Normal Mode (No test),  
 {
 	uint8_t axisLow, axisHigh = 0;
+	int16_t tempAxis = 0;
+	
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTX_L,1);
 	LIS302DL_Read(&axisHigh, LIS3DH_OUTX_H,1);
-	ACCx->X = ((axisLow)+(axisHigh<<8)*SENS);
+	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
+	ACCx->X = 4.0f * ((float)tempAxis / 640000);;
 	
-	axisLow = 0;
-	axisHigh = 0;
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTY_L,1);
 	LIS302DL_Read(&axisHigh, LIS3DH_OUTY_H,1);
-	ACCx->Y = ((axisLow)+(axisHigh<<8)*SENS);
+	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
+	ACCx->Y = 4.0f * ((float)tempAxis / 64000);
 	
-	axisLow = 0;
-	axisHigh = 0;
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTZ_L,1);
 	LIS302DL_Read(&axisHigh, LIS3DH_OUTZ_H,1);
-	ACCx->Z = ((axisLow)+(axisHigh<<8)*SENS);
+	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
+	ACCx->Z = 4.0f * ((float)tempAxis / 64000);
 }

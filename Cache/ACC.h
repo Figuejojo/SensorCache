@@ -15,7 +15,7 @@
 /*******************************************************************************
 * Macro Definitions
 *******************************************************************************/
-#define CYCLETIMEACC  (5000)			/*!< Amount of time for the Task delay    	 */
+#define CYCLETIMEACC  (1000)			/*!< Amount of time for the Task delay    	 */
 
 //LIS3DH Commands (Datasheet)
 #define LIS3DH_WHO_AM_I  (0x07)		
