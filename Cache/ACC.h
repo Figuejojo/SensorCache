@@ -40,8 +40,8 @@
 #define LIS3DH_CS_HIGH()	GPIO_SetBits(GPIOE, GPIO_Pin_3)
 
 //LIS3DH Sensitivity
-#define SENS	 (0.061f)
-
+#define RANGE_2G	(0.4f)	//2G Range +2 to -2 G
+#define VAL_TO_G	(64000)	//(65536[16bits] / 1024[10bit]) * 1000[miligs to gs]
 /*******************************************************************************
 * Type definitions
 *******************************************************************************/
@@ -83,6 +83,7 @@ uint8_t initACC(void);
 /** @name 	getACC
 	*	@brief 	Get the X,Y and Z raw data from the accelerometer. 
 	*						- Unify the LSB and MSB
+	*						- Transform values into +/-2g
   *
   * @param 	axis_t pointer @see axis_t
   */

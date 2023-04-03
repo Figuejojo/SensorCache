@@ -123,9 +123,10 @@ uint8_t initACC(void)
 	{
 		return 1;
 	}
-	
-				// 	ODR 		LPen   X Enable	Y	Enable ZEnable
+				// 	ODR 		LPen    XEnable	YEnable  ZEnable	
 	ctrl =  (2<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0);
+					//ODR - Normal Low-power 25Hz
+					//LPen- Normal (High Resolution) Mode 
 	
 	/* Write value to MEMS CTRL_REG1 regsister */
   LIS302DL_Write(&ctrl, LIS3DH_CTRL_REG1, 1);
@@ -144,17 +145,17 @@ void getACC(axis_t * ACCx) //Default is +/-2g, Normal Mode (No test),
 	int16_t tempAxis = 0;
 	
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTX_L,1);
-	LIS302DL_Read(&axisHigh, LIS3DH_OUTX_H,1);
-	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
-	ACCx->X = 4.0f * ((float)tempAxis / 640000);;
+	LIS302DL_Read(&axisHigh, LIS3DH_OUTX_H,1);					
+	tempAxis = (axisLow|((uint16_t)axisHigh<<8));				// Middle step for getting signed 16-bit
+	ACCx->X = RANGE_2G * ((float)tempAxis / VAL_TO_G); 	// Conversion to float and g value.
 	
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTY_L,1);
 	LIS302DL_Read(&axisHigh, LIS3DH_OUTY_H,1);
 	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
-	ACCx->Y = 4.0f * ((float)tempAxis / 64000);
+	ACCx->Y = RANGE_2G * ((float)tempAxis / VAL_TO_G);
 	
 	LIS302DL_Read(&axisLow,  LIS3DH_OUTZ_L,1);
 	LIS302DL_Read(&axisHigh, LIS3DH_OUTZ_H,1);
-	tempAxis = (axisLow|((uint16_t)axisHigh<<8));
-	ACCx->Z = 4.0f * ((float)tempAxis / 64000);
+	tempAxis = (axisLow|((uint16_t)axisHigh<<8));  
+	ACCx->Z = RANGE_2G * ((float)tempAxis / VAL_TO_G);
 }
