@@ -1,5 +1,5 @@
 /** @file CacheDTypes.h
- *  @brief Header file for the Game Engine functions used across the game files.
+ *  @brief Common Header file for the message communication with the Cache. 
  *
  *  @author Y3913624
  */
