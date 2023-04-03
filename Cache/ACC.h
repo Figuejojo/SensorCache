@@ -1,6 +1,7 @@
 /** @file ACC.h
- *  @brief Header file for the accelerometer
- *
+ *  @brief Header file for the accelerometer LIS3DH
+ *					STM32F4 discovery board. The development was in C01 hardware version
+ *					Accelerometer in this development is LIS3DH.
  *  @author Y3913624
  */
  
@@ -74,6 +75,8 @@ portTASK_FUNCTION_PROTO(vACC, pvParameters);
 	*	@brief 	Initializr GPIO and SPI peripherals and configure the Accelerometer
   *
   * @param 	Void
+	* @return uint8_t 0 - If the correct accelerometer is detected (LIS3DH).
+	*									1 - Otherwise.
   */
 uint8_t initACC(void);
 

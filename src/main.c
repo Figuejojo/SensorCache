@@ -26,6 +26,7 @@ int main(void) {
 	initLEDs();
 	initBUTs();
 	initAnalog();
+	//There are two versions of the STM32F4DISCOVERY with different accelerometers.
 	uint8_t isAccSupported = initACC();
 	
 	// *** Initialise the queue HERE
@@ -53,11 +54,12 @@ int main(void) {
 	xTaskCreate(vGPIO,   "GPIOs" , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY  ,&hCache);
 	if(isAccSupported == 0)
 	{	
+		// If the accelerometer is not supported the task will not be created. Having not value at the cache when requested.
 		xTaskCreate(vACC, 	 "ACC" 	 , configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2,&hCache);
 	}
 	else
 	{	
-		printf("\r\nAccelerometer not supported\r\n");
+		printf("\r\nAccelerometer not supported - Verify Hardware version\r\n");
 	}
 
 	vTaskStartScheduler(); // This should never return.
